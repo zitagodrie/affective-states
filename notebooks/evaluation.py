@@ -88,27 +88,37 @@ def test_plot_class_prediction_error():
     plot_class_prediction_error(cm)
     plt.show()
 
-def multi_classification_evaluation(y_true, y_pred, subtitle=""):
+def multi_classification_evaluation(y_true, y_pred, subtitle="", display=True):
     classes = ['very low', 'low', 'neutral', 'high', 'very high']
     classes = [cls for cls in classes if cls in y_true]
+
     # Multiclass Classification report (precision, recall, f1, support), Multiclass confusion matrix, Class Prediction Error plot
     report = classification_report(y_true, y_pred, output_dict=True)
     fig1, ax = plot_classification_report(report, classes, title="Classification report " + subtitle)
-    # fig1.savefig(os.path.join(BASE_DIR, "./figures", "classification_report.png"))
-    fig1.show()
+    if display:
+        fig1.show()
 
     cm = confusion_matrix(y_true, y_pred, labels=classes)
     cm_disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=list(report.keys())[:-3])
     fig2 = cm_disp.plot(cmap='Blues')
     cm_disp.ax_.set_title("Confusion Matrix " + subtitle)
-    # fig2.savefig(os.path.join(BASE_DIR, "./figures", "confusion_matrix.png"))
-    plt.show()
+    if display:
+        plt.show()
 
     fig3, ax3 = plot_class_prediction_error(cm, classes, title="Class Prediction Error " + subtitle)
-    # fig3.savefig(os.path.join(BASE_DIR, "./figures", "prediction_error.png"))
-    fig3.show()
+    if display:
+        fig3.show()
 
-    return fig1, fig2, fig3
+    statistics =  {
+        "accuracy": accuracy_score(y_true, y_pred),
+        "f1_score": f1_score(y_true, y_pred, average='weighted'),
+        "classification_report": report
+    }
+    print(f"Accuracy: {statistics['accuracy']}")
+    print(f"F1 Score: {statistics['f1_score']}")
+    print(f"Classification Report: {statistics['classification_report']}")
+
+    return fig1, fig2, fig3, statistics
 
 def test_multi_classification_evaluation():
     y_true = np.array(["low", "high", "neutral", "low", "low", "high"])
