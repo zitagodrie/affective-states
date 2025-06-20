@@ -22,7 +22,7 @@ This repository contains the code for the Bachelor End Project of the Bachelor D
 3. (Recommended) Create and activate a virtual environment:
    ```bash
    python -m venv venv
-   venv\Scripts\activate (on Windows)
+   venv\Scripts\activate
    ```
 4. Install dependencies:
    ```bash
